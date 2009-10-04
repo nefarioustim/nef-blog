@@ -6,5 +6,5 @@ This is a blog application for Django, which will be used by a number of project
 Prerequisites
 -------------
 
- * [Akismet](http://pypi.python.org/pypi/akismet) ([http://pypi.python.org/pypi/akismet](http://pypi.python.org/pypi/akismet))
+ * [Akismet](http://pypi.python.org/pypi/akismet/) ([http://pypi.python.org/pypi/akismet/](http://pypi.python.org/pypi/akismet/))
  * [Beautiful Soup](http://pypi.python.org/pypi/BeautifulSoup/) ([http://pypi.python.org/pypi/BeautifulSoup/](http://pypi.python.org/pypi/BeautifulSoup/))
