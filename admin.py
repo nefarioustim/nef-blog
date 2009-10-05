@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from nefariousdesigns.blog.models import Category, Post
+from blog.models import Category, Post
 
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
