@@ -6,7 +6,7 @@ from blog.models import Category, Post
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
     return render_to_response('blog/category_detail.html', {
-        'object_list': category.post_set.all(),
+        'object_list': category.pub_post_set(),
         'cat': category
     })
 

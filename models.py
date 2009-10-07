@@ -37,6 +37,9 @@ class Category(models.Model):
     
     def get_absolute_url(self):
         return '/%s/' % self.slug
+    
+    def pub_post_set(self):
+        return self.post_set.filter(status=Post.STATUS_PUB)
 
 class PubPostManager(models.Manager):
     def get_query_set(self):
