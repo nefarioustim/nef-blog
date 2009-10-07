@@ -1,11 +1,7 @@
 from django.conf.urls.defaults import *
 
 from blog.models import Category, Post
-
-post_info_dict = {
-    'queryset': Post.pub.all(),
-    'date_field': 'pub_date',
-}
+from blog.feeds import RssFeed, AtomFeed
 
 urlpatterns = patterns('blog.views',
     (r'^$', 'post_index'),
@@ -13,8 +9,14 @@ urlpatterns = patterns('blog.views',
     (r'^categories/(?P<slug>[-\w]+)/$', 'category_detail'),
 )
 
+feeds_dict = {
+    'rss': RssFeed,
+    'atom': AtomFeed,
+}
+
 urlpatterns += patterns('',
-    (r'^comments/', include('django.contrib.comments.urls'))
+    (r'^comments/', include('django.contrib.comments.urls')),
+    (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds_dict}),
 )
 
 urlpatterns += patterns('',
@@ -22,6 +24,11 @@ urlpatterns += patterns('',
         'queryset': Category.objects.all()
     }),
 )
+
+post_info_dict = {
+    'queryset': Post.pub.all(),
+    'date_field': 'pub_date',
+}
 
 urlpatterns += patterns('django.views.generic.date_based',
     (r'^archive/$', 'archive_index', post_info_dict),
