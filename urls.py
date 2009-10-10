@@ -5,6 +5,8 @@ from blog.feeds import RssFeed, AtomFeed
 
 urlpatterns = patterns('blog.views',
     (r'^$', 'post_index'),
+    (r'^contact/$', 'contact'),
+    (r'^contact/thanks.html$', 'contact_thanks'),
     (r'^(?P<slug>[-\w]+)\.html$', 'post_detail'),
     (r'^categories/(?P<slug>[-\w]+)/$', 'category_detail'),
 )
