@@ -1,5 +1,7 @@
+import logging
 from datetime import date
 
+from django.forms.widgets import CheckboxInput
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from blog.models import Category, Post
 from blog.forms import ContactForm
@@ -14,6 +16,7 @@ def category_detail(request, slug):
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
+        
         if form.is_valid():
             from django.core.mail import send_mail, mail_managers
             
