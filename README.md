@@ -8,3 +8,9 @@ Prerequisites
 
  * [Akismet](http://pypi.python.org/pypi/akismet/) ([http://pypi.python.org/pypi/akismet/](http://pypi.python.org/pypi/akismet/))
  * [Beautiful Soup](http://pypi.python.org/pypi/BeautifulSoup/) ([http://pypi.python.org/pypi/BeautifulSoup/](http://pypi.python.org/pypi/BeautifulSoup/))
+
+Recommended additions
+--------------------
+
+ * [Django CSRF Middleware](http://docs.djangoproject.com/en/dev/ref/contrib/csrf/) ([http://docs.djangoproject.com/en/dev/ref/contrib/csrf/](http://docs.djangoproject.com/en/dev/ref/contrib/csrf/))
+ * [Django Honeypot](http://github.com/sunlightlabs/django-honeypot) ([http://github.com/sunlightlabs/django-honeypot](http://github.com/sunlightlabs/django-honeypot))
