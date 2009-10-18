@@ -99,15 +99,22 @@ class Post(models.Model):
     
     def get_absolute_url(self):
         return '/%s.html' % self.slug
+    
+    def save(self, force_insert=False, force_update=False):
+        self.body = sanitise(self.body)
+        if self.excerpt:
+            self.excerpt = sanitise(self.excerpt)
+        super(Post, self).save(force_insert, force_update)
 
 def sanitise(value):
     whitelist = [
         'a:title:href', 'abbr:title', 'acronym:title', 'address',
         'blockquote:cite', 'br', 'caption', 'center', 'cite:url', 'code',
-        'dd', 'del:cite:datetime', 'dfn', 'dl', 'dt', 'em', 'h1', 'h2', 'h3',
-        'h4', 'h5', 'h6', 'hr', 'img:src:alt', 'ins:cite:datetime', 'kbd',
-        'li', 'ol', 'p', 'pre', 'q:cite', 'samp', 'strong', 'sub', 'sup',
-        'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul', 'var',
+        'dd', 'del:cite:datetime', 'dfn', 'dl', 'dt', 'em', 'h1:id', 'h2:id',
+        'h3:id', 'h4:id', 'h5:id', 'h6:id', 'hr', 'img:src:alt:width:height',
+        'ins:cite:datetime', 'kbd', 'li', 'ol', 'p', 'pre', 'q:cite', 'samp',
+        'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead',
+        'tr', 'ul', 'var',
     ]
     
     js_regex = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript')))
