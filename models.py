@@ -13,6 +13,8 @@ from django.utils.encoding import smart_str
 from akismet import Akismet
 from BeautifulSoup import BeautifulSoup, Comment as BSComment
 
+COMMENT_MAX_LENGTH = getattr(settings, 'COMMENT_MAX_LENGTH', 3000)
+
 class Category(models.Model):
     """Blog post category.
     
@@ -105,6 +107,19 @@ class Post(models.Model):
         if self.excerpt:
             self.excerpt = sanitise(self.excerpt)
         super(Post, self).save(force_insert, force_update)
+
+class Comment(models.Model):
+    user_name = models.CharField(max_length=50)
+    user_email = models.EmailField()
+    user_url = models.URLField(blank=True)
+    comment = models.TextField(max_length=COMMENT_MAX_LENGTH)
+    
+    # Metadata
+    post = models.ForeignKey(Post)
+    submit_date = models.DateTimeField(default=None)
+    ip_address = models.IPAddressField(blank=True, null=True)
+    is_public = models.BooleanField(default=True)
+    is_removed = models.BooleanField(default=False)
 
 def sanitise(value):
     whitelist = [
