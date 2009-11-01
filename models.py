@@ -116,7 +116,7 @@ class Comment(models.Model):
     
     # Metadata
     post = models.ForeignKey(Post)
-    submit_date = models.DateTimeField(default=None)
+    submit_date = models.DateTimeField(default=datetime.now)
     ip_address = models.IPAddressField(blank=True, null=True)
     is_public = models.BooleanField(default=True)
     is_removed = models.BooleanField(default=False)
@@ -152,12 +152,13 @@ def sanitise(value):
 def moderate_comment(sender, **kwargs):
     """Comment moderation callback function.
     
-    Registered against django.contrib.comments comment pre_save.
+    Registered against comment pre_save.
     
     """
     
     instance = kwargs["instance"]
     
+    #if not request.user.is_authenticated():
     akismet_api = Akismet(key=settings.AKISMET_API_KEY,
                           blog_url="http://%s/" %
                           Site.objects.get_current().domain)
@@ -176,11 +177,9 @@ def moderate_comment(sender, **kwargs):
         
         if has_fail:
             instance.is_public = False
-    
-    instance.comment = sanitise(instance.comment)
-    
-    email_body = "%s posted a new comment on the entry '%s'."
-    mail_managers("New comment posted", email_body %
-                  (instance.user_name, instance.content_object))
+        
+        instance.comment = sanitise(instance.comment)
+        
+        
 
 pre_save.connect(moderate_comment, sender=Comment)

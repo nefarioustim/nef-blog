@@ -4,7 +4,7 @@ from datetime import date
 from django.forms.widgets import CheckboxInput
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from blog.models import Category, Post
-from blog.forms import ContactForm
+from blog.forms import ContactForm, CommentForm
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
@@ -52,6 +52,25 @@ def post_index(request):
 
 def post_detail(request, slug):
     post = get_object_or_404(Post.pub, slug=slug)
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.ip_address = request.META.get("REMOTE_ADDR", None)
+            comment.save()
+            
+            email_body = "%s posted a new comment on the post '%s'."
+            mail_managers("New comment posted", email_body %
+                          (comment.user_name, post))
+            
+            return redirect('blog.views.post_detail', slug=post.slug)
+    else:
+        form = CommentForm()
+    
     return render_to_response('blog/post_detail.html', {
-        'post': post
+        'post': post,
+        'form': form,
     })
