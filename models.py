@@ -4,12 +4,8 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
-from django.contrib.sites.models import Site
 from django.db import models
-from django.db.models.signals import pre_save
-from django.utils.encoding import smart_str
 
-from akismet import Akismet
 from BeautifulSoup import BeautifulSoup, Comment as BSComment
 
 COMMENT_MAX_LENGTH = getattr(settings, 'COMMENT_MAX_LENGTH', 3000)
@@ -147,36 +143,3 @@ def sanitise(value):
                          if attr in allowed_tags[tag.name]]
     
     return soup.renderContents().decode('utf8')
-
-def moderate_comment(sender, **kwargs):
-    """Comment moderation callback function.
-    
-    Registered against comment pre_save.
-    
-    """
-    
-    instance = kwargs["instance"]
-    
-    #if not request.user.is_authenticated():
-    akismet_api = Akismet(key=settings.AKISMET_API_KEY,
-                          blog_url="http://%s/" %
-                          Site.objects.get_current().domain)
-    
-    if akismet_api.verify_key():
-        akismet_data = {
-            'comment_type': 'comment',
-            'referrer': '',
-            'user_ip': instance.ip_address,
-            'user_agent': ''
-        }
-        
-        has_fail = akismet_api.comment_check(smart_str(instance.comment),
-                                             akismet_data,
-                                             build_data=True)
-        
-        if has_fail:
-            instance.is_public = False
-        
-        instance.comment = sanitise(instance.comment)
-
-pre_save.connect(moderate_comment, sender=Comment)

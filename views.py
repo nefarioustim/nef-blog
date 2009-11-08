@@ -2,6 +2,7 @@ import logging
 from datetime import date
 
 from django.forms.widgets import CheckboxInput
+from django.core.mail import send_mail, mail_managers
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from blog.models import Category, Post
 from blog.forms import ContactForm, CommentForm
@@ -18,8 +19,6 @@ def contact(request):
         form = ContactForm(request.POST)
         
         if form.is_valid():
-            from django.core.mail import send_mail, mail_managers
-            
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
             sender = form.cleaned_data['sender']
@@ -60,6 +59,7 @@ def post_detail(request, slug):
             comment = form.save(commit=False)
             comment.post = post
             comment.ip_address = request.META.get("REMOTE_ADDR", None)
+            comment = form.moderate(comment)
             comment.save()
             
             email_body = "%s posted a new comment on the post '%s'."

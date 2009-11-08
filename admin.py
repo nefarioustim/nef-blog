@@ -29,7 +29,8 @@ class PostAdmin(admin.ModelAdmin):
     ]
 
 class CommentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('user_name', 'submit_date', 'post', 'is_public')
+    list_filter = ('post', 'is_public', 'is_removed')
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)
